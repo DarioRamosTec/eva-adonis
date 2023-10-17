@@ -3,7 +3,7 @@
 import Comment from 'App/Models/Comment'
 
 export default class CommentsController {
-  public async index ({ request, response }) {
+  public async index ({ response }) {
     const comment = await Comment.all()
     if (comment.length > 0) {
       response.accepted(

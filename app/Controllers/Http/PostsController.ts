@@ -3,7 +3,7 @@
 import Post from 'App/Models/Post'
 
 export default class PostsController {
-  public async index ({ request, response }) {
+  public async index ({ response }) {
     const post = await Post.all()
     if (post.length > 0) {
       response.accepted(
