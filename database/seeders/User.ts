@@ -12,6 +12,9 @@ export default class extends BaseSeeder {
       email: 'yeojin@grrrverse.com',
     }])
 
-    await User.create(await UserFactory.create())
+    await User.createMany(await UserFactory
+      .with('posts', 2, (post) => post.with('comments', 1, (comment) => comment
+        .merge({ user_id: 1 })))
+      .createMany(5))
   }
 }

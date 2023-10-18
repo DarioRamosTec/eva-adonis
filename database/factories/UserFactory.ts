@@ -1,5 +1,7 @@
 import User from 'App/Models/User'
 import Factory from '@ioc:Adonis/Lucid/Factory'
+import PostFactory from './PostFactory'
+import CommentFactory from './CommentFactory'
 
 export default Factory.define(User, ({ faker }) => {
   return {
@@ -11,4 +13,4 @@ export default Factory.define(User, ({ faker }) => {
     email: faker.internet.email(),
     genre: faker.person.sexType(),
   }
-}).build()
+}).relation('comments', () => CommentFactory).relation('posts', () => PostFactory).build()
