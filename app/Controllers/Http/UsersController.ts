@@ -7,25 +7,26 @@ export default class UsersController {
   public async index ({ request, response }) {
     let user
     if (request.param('id', null) !== null) {
-      user = await User.all()
+      user = await User.query().where('id', request.param('id')).preload('posts').preload('comments')
       if (user.length > 0) {
         response.accepted(
           {
-            msg: 'Estas son todos los usuarios.',
+            msg: 'Este es el usuario que buscas.',
             data: user,
           })
       } else {
         response.notFound(
           {
-            msg: 'Aún no hay ningún usuario.',
-          })
+            msg: 'No existe ningún ídolo con la clave especificada.',
+          }
+        )
       }
     } else {
-      user = await User.all()
+      user = await User.query().preload('posts').preload('comments')
       if (user.length > 0) {
         response.accepted(
           {
-            msg: 'Estos son todos los usarios.',
+            msg: 'Estos son todos los usuarios.',
             data: user,
           }
         )
@@ -53,7 +54,7 @@ export default class UsersController {
     response.created(
       {
         msg: (user.genre === 'male' ?
-          'El usuario ha sido creado.' : (user.genre === 'female' ? 'La idolo ha sido creada.' : 'Se creó un idolo.')),
+          'El usuario ha sido creado.' : (user.genre === 'female' ? 'La usuario ha sido creada.' : 'Se creó un usuario.')),
         data: user,
       }
     )
@@ -62,16 +63,16 @@ export default class UsersController {
   public async update ({ request, response }) {
     const validation = await request.validate(UserValidator)
 
-    const user = await User.find(request.param('id', null))
+    const user = await User.find(request.param('id'))
     if (user !== null) {
       user.merge(validation).save()
       response.accepted({
-        msg: 'El idolo se ha actualizado.',
+        msg: 'El usuario se ha actualizado.',
       })
     } else {
       response.notFound(
         {
-          msg: 'No existe ningún ídolo con la clave especificada.',
+          msg: 'No existe ningún usuario con la clave especificada.',
         }
       )
     }
