@@ -40,14 +40,18 @@ export default class extends BaseSeeder {
       .createMany(5))
 
     // Darle comentarios a los posts.
-    await Comment.updateOrCreate({
+    let users = await User.all()
+    let comments = await Comment.all()
+    /*await Comment.updateOrCreate({
       user_id: 3,
-    }, {})
-    /*const comments = await Comment.all()
-    comments.forEach(async function (comment) {
-      console.log('aaa')
-      await comment.merge({ user_id: 3 }).save()
-    })
-    */
+    }, {}) -> No sirve este metodo. */
+
+    /*comments.forEach(async function (comment) {
+      await comment.merge({ user_id: 4 }).save()
+    }) -> No sirve este metodo. */
+
+    for (let comment of comments) {
+      await comment.merge({ user_id: users[Math.floor(Math.random()*users.length)].id }).save()
+    }
   }
 }
