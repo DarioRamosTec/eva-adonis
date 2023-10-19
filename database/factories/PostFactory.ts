@@ -6,7 +6,7 @@ export default Factory.define(Post, ({ faker }) => {
   return {
     title: faker.lorem.sentence(),
     content: faker.lorem.paragraphs(5),
-    likes: faker.number.int({ min: 0 }),
-    dislikes: faker.number.int({ min: 0 }),
+    likes: faker.number.int(100),
+    dislikes: faker.number.int(50),
   }
 }).relation('comments', () => CommentFactory).build()

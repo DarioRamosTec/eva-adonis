@@ -32,7 +32,7 @@ export default class UsersController {
       } else {
         response.notFound(
           {
-            msg: 'un no hay ningún usuario.',
+            msg: 'Aún no hay ningún usuario.',
           }
         )
       }
