@@ -13,7 +13,7 @@ export default class extends BaseSchema {
       table.string('name', 20)
       table.string('middle_name', 20).nullable()
       table.string('last_name', 20)
-      table.string('status', 40).nullable()
+      table.string('status', 256).nullable()
       table.enu('genre', ['male', 'female']).nullable()
       table.string('email', 100).unique()
       table.string('password', 256)

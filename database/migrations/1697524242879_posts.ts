@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
-      table.string('title', 30)
+      table.string('title', 256)
       table.string('content', 256)
       table.integer('likes')
       table.integer('dislikes')

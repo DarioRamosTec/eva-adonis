@@ -5,7 +5,7 @@ import CommentFactory from './CommentFactory'
 export default Factory.define(Post, ({ faker }) => {
   return {
     title: faker.lorem.sentence(),
-    content: faker.lorem.paragraphs(5),
+    content: faker.lorem.paragraphs(1),
     likes: faker.number.int(100),
     dislikes: faker.number.int(50),
   }

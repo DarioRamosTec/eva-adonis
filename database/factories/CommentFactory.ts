@@ -3,7 +3,7 @@ import Factory from '@ioc:Adonis/Lucid/Factory'
 
 export default Factory.define(Comment, ({ faker }) => {
   return {
-    content: faker.lorem.paragraphs(5),
+    content: faker.lorem.paragraphs(1),
     likes: faker.number.int(75),
     dislikes: faker.number.int(25),
   }
