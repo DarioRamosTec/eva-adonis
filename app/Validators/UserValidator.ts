@@ -51,6 +51,7 @@ export default class UserValidator {
       rules.minLength(10),
       rules.maxLength(256),
     ]),
+    active: schema.boolean.nullableAndOptional(),
   })
 
   /**

@@ -12,6 +12,7 @@ export default class extends BaseSeeder {
       status: 'Flip that, flip that that. So flip that, flip that now',
       genre: 'female',
       email: 'yeojin@grrrverse.com',
+      active: true,
     }])
 
     await Post.create(

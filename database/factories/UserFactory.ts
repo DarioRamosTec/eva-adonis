@@ -12,5 +12,6 @@ export default Factory.define(User, ({ faker }) => {
     password: faker.internet.password(),
     email: faker.internet.email(),
     genre: faker.person.sexType(),
+    active: true,
   }
 }).relation('comments', () => CommentFactory).relation('posts', () => PostFactory).build()

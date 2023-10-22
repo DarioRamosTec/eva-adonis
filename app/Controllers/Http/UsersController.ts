@@ -7,7 +7,8 @@ export default class UsersController {
   public async index ({ request, response }) {
     let user
     if (request.param('id', null) !== null) {
-      user = await User.query().where('id', request.param('id')).preload('posts').preload('comments')
+      user = await User.query().where('id', request.param('id'))
+        .where('active', true).preload('posts').preload('comments')
       if (user.length > 0) {
         response.accepted(
           {
@@ -17,12 +18,12 @@ export default class UsersController {
       } else {
         response.notFound(
           {
-            msg: 'No existe ningún ídolo con la clave especificada.',
+            msg: 'No se encontró el usuario.',
           }
         )
       }
     } else {
-      user = await User.query().preload('posts').preload('comments')
+      user = await User.query().where('active', true).preload('posts').preload('comments')
       if (user.length > 0) {
         response.accepted(
           {
@@ -41,75 +42,104 @@ export default class UsersController {
   }
 
   public async store ({ request, response }) {
-    await request.validate(UserValidator)
-    const user = await User.create({
-      name: request.input('nombre'),
-      middle_name: request.input('middle_name', null),
-      last_name: request.input('last_name'),
-      status: request.input('status', null),
-      genre: request.input('genre', null),
-      email: request.input('email'),
-    })
-
-    response.created(
-      {
-        msg: (user.genre === 'male' ?
-          'El usuario ha sido creado.' : (user.genre === 'female' ? 'La usuario ha sido creada.' : 'Se creó un usuario.')),
-        data: user,
-      }
-    )
-  }
-
-  public async update ({ request, response }) {
-    const validation = await request.validate(UserValidator)
-
-    const user = await User.find(request.param('id'))
-    if (user !== null) {
-      user.merge(validation).save()
-      response.accepted({
-        msg: 'El usuario se ha actualizado.',
+    if (request.param('id', null) === null) {
+      await request.validate(UserValidator)
+      const user = await User.create({
+        name: request.input('name'),
+        middle_name: request.input('middle_name', null),
+        last_name: request.input('last_name'),
+        status: request.input('status', null),
+        genre: request.input('genre', null),
+        email: request.input('email'),
+        active: true,
       })
-    } else {
-      response.notFound(
+      user.save()
+      response.created(
         {
-          msg: 'No existe ningún usuario con la clave especificada.',
+          msg: (user.genre === 'male' ?
+            'El usuario ha sido creado.' :
+            user.genre === 'female' ? 'La usuario ha sido creada.' : 'Se creó un usuario.'),
+          data: user,
         }
       )
     }
   }
 
+  public async update ({ request, response }) {
+    const validation = await request.validate(UserValidator)
+
+    if (request.param('id', null) !== null) {
+      const user = await User.query().where('id', request.param('id'))
+        .where('active', true)
+      if (user !== null) {
+        user[0].merge(validation).save()
+        response.accepted({
+          msg: 'El usuario se ha actualizado.',
+        })
+      } else {
+        response.notFound(
+          {
+            msg: 'No existe ningún usuario con la clave especificada.',
+          }
+        )
+      }
+    }
+  }
+
   public async destroy ({ request, response }) {
     if (request.param('id', null) !== null) {
-      const user = await User.find(request.param('id'))
+      const user = await User.query().where('id', request.param('id'))
       if (user !== null) {
-        user.delete()
+        user[0].active = false
+        user[0].save()
         response.accepted(
           {
-            msg: 'El usuario ha sido eliminado.',
+            msg: 'El usuario ha sido desactivado.',
           }
         )
       } else {
         response.notFound(
           {
-            msg: 'El usuario no existe.',
+            msg: 'El usuario no fue encontrado.',
           }
         )
       }
     } else {
-      if (User.length > 0) {
-        await User.query().delete()
+      let users = await User.query().where('active', true)
+      if (users.length > 0) {
+        await users.forEach((user) => {
+          user.active = !user.active
+        })
         response.accepted(
           {
-            msg: 'Todos los usuarios han sido eliminados.',
+            msg: 'Todos los usuarios han sido desactivados.',
           }
         )
       } else {
         response.notFound(
           {
-            msg: 'No hay ningún usuario que eliminar aún.',
+            msg: 'No hay ningún usuario activo.',
           }
         )
       }
+    }
+  }
+
+  public async decideAction ({ request, response }) {
+    switch (request.intended()) {
+      case 'GET':
+        return this.index({request, response})
+      case 'POST':
+        return this.store({request, response})
+      case 'PUT':
+        return this.update({request, response})
+      case 'DELETE':
+        return this.destroy({request, response})
+      default:
+        response.notFound({
+          msg: 'No se encontró ningún metodo para manejar su petición.',
+        })
+        break
     }
   }
 }

@@ -17,6 +17,7 @@ export default class extends BaseSchema {
       table.enu('genre', ['male', 'female']).nullable()
       table.string('email', 100).unique()
       table.string('password', 256)
+      table.boolean('active').defaultTo(false)
       table.timestamps()
       //table.timestamp('created_at', { precision: 6, useTz: true })
       //table.timestamp('updated_at', { precision: 6, useTz: true })
