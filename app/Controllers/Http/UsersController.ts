@@ -2,6 +2,7 @@
 
 import User from 'App/Models/User'
 import UserValidator from 'App/Validators/UserValidator'
+import UserValidatorMail from 'App/Validators/UserValidatorMail'
 
 export default class UsersController {
   public async index ({ request, response }) {
@@ -66,7 +67,7 @@ export default class UsersController {
   }
 
   public async update ({ request, response }) {
-    const validation = await request.validate(UserValidator)
+    const validation = await request.validate(UserValidatorMail)
 
     if (request.param('id', null) !== null) {
       const user = await User.query().where('id', request.param('id'))
