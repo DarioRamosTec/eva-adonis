@@ -43,27 +43,25 @@ export default class UsersController {
   }
 
   public async store ({ request, response }) {
-    if (request.param('id', null) === null) {
-      await request.validate(UserValidator)
-      const user = await User.create({
-        name: request.input('name'),
-        middle_name: request.input('middle_name', null),
-        last_name: request.input('last_name'),
-        status: request.input('status', null),
-        genre: request.input('genre', null),
-        email: request.input('email'),
-        active: true,
-      })
-      user.save()
-      response.created(
-        {
-          msg: (user.genre === 'male' ?
-            'El usuario ha sido creado.' :
-            user.genre === 'female' ? 'La usuario ha sido creada.' : 'Se creó un usuario.'),
-          data: user,
-        }
-      )
-    }
+    await request.validate(UserValidator)
+    const user = await User.create({
+      name: request.input('name'),
+      middle_name: request.input('middle_name', null),
+      last_name: request.input('last_name'),
+      status: request.input('status', null),
+      genre: request.input('genre', null),
+      email: request.input('email'),
+      active: true,
+    })
+    user.save()
+    response.created(
+      {
+        msg: (user.genre === 'male' ?
+          'El usuario ha sido creado.' :
+          user.genre === 'female' ? 'La usuario ha sido creada.' : 'Se creó un usuario.'),
+        data: user,
+      }
+    )
   }
 
   public async update ({ request, response }) {
@@ -84,6 +82,12 @@ export default class UsersController {
           }
         )
       }
+    } else {
+      response.forbidden(
+        {
+          msg: 'Para actualizar un usuario, se debe señalar un identificador.',
+        }
+      )
     }
   }
 
