@@ -31,3 +31,8 @@ Route.group(() => {
     return { msg: request.intended() + ' ME!' }
   })
 })
+
+Route.group(() => {
+  Route.get('/test/me', 'MiscsController.checkAndTest').namespace('App/Controllers/Http')
+  Route.get('/test/you', 'MiscsController.checkAndTest2').namespace('App/Controllers/Http')
+})
