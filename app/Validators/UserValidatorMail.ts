@@ -43,9 +43,6 @@ export default class UserValidatorMail {
       rules.minLength(10),
       rules.maxLength(50),
     ]),
-    email: schema.string([
-      rules.email(),
-    ]),
     password: schema.string([
       rules.minLength(10),
       rules.maxLength(256),

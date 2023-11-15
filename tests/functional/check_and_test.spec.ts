@@ -14,5 +14,5 @@ test.group('Test the new tests', () => {
     assert.isBoolean(response.body()['data'])
     assert.isFalse(response.body()['data'])
     assert.isNotArray(response.body()['data'])
-  }) 
+  })
 })
