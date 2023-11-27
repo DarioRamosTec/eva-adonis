@@ -61,7 +61,7 @@ test.group('Test two', () => {
     })
   }),
   test('Delete a user and check if all is correct', async ({client}) => {
-    const response = client.delete('v1/users/7')
+    const response = client.delete('v1/users/1')
 
     ;(await response).assertBody({
       'msg': 'El usuario ha sido desactivado.',

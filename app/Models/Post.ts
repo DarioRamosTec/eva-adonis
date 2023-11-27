@@ -25,6 +25,9 @@ export default class Post extends BaseModel {
   @column()
   public user_id: number
 
+  @column()
+  public active: boolean
+
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 

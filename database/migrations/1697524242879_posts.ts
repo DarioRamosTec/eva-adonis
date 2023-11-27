@@ -14,6 +14,7 @@ export default class extends BaseSchema {
       table.string('content', 256)
       table.integer('likes')
       table.integer('dislikes')
+      table.boolean('active').defaultTo(true)
       //table.timestamp('created_at', { useTz: true })
       ///table.foreign('user_id').references('users.id')
       table.integer('user_id').unsigned().references('id').inTable('users')

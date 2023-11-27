@@ -130,7 +130,7 @@ export default class UsersController {
     }
   }
 
-  public async decideAction ({ request, response }) {
+  public async decide ({ request, response }) {
     switch (request.intended()) {
       case 'GET':
         return this.index({request, response})
