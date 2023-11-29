@@ -18,6 +18,7 @@ export default class extends BaseSchema {
       table.string('email', 100).unique()
       table.string('password', 256)
       table.boolean('active').defaultTo(false)
+      table.integer('role_id').unsigned().references('id').inTable('roles')
       table.timestamps()
       //table.timestamp('created_at', { precision: 6, useTz: true })
       //table.timestamp('updated_at', { precision: 6, useTz: true })

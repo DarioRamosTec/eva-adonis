@@ -17,6 +17,9 @@ export default class Comment extends BaseModel {
   public dislikes: number
 
   @column()
+  public active: boolean
+
+  @column()
   public post_id: number
 
   @column()

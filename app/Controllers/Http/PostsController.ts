@@ -1,6 +1,7 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Post from 'App/Models/Post'
+import User from 'App/Models/User'
 import PostValidator from 'App/Validators/PostValidator'
 
 export default class PostsController {
@@ -42,21 +43,40 @@ export default class PostsController {
   }
 
   public async store ({ request, response }) {
-    await request.validate(PostValidator)
-    const post = await Post.create({
-      title: request.input('title'),
-      content: request.input('content', null),
-      likes: request.input('likes'),
-      dislikes: request.input('dislikes', null),
-      active: true,
-    })
-    post.save()
-    response.created(
-      {
-        msg: 'La publicación ha sido creada.',
-        data: post,
+    let id = request.param('id', null)
+    if (id !== null) {
+      let user = await User.query().where('id', request.param('id'))
+      if (user === null) {
+        response.created(
+          {
+            msg: 'No se encontró al usuario.',
+          }
+        )
+      } else {
+        await request.validate(PostValidator)
+        const post = await Post.create({
+          title: request.input('title'),
+          content: request.input('content', null),
+          likes: request.input('likes'),
+          dislikes: request.input('dislikes', null),
+          user_id: user[0].id,
+          active: true,
+        })
+        post.save()
+        response.created(
+          {
+            msg: 'La publicación ha sido creada.',
+            data: post,
+          }
+        )
       }
-    )
+    } else {
+      response.notFound(
+        {
+          msg: 'No se ha indicado ningún usuario para crear una publicación.',
+        }
+      )
+    }
   }
 
   public async update ({ request, response }) {
@@ -129,12 +149,15 @@ export default class PostsController {
     switch (request.intended()) {
       case 'GET':
         return this.index({request, response})
-      case 'POST':
-        return this.store({request, response})
       case 'PUT':
         return this.update({request, response})
       case 'DELETE':
         return this.destroy({request, response})
+      case 'POST':
+        response.notAcceptable({
+          msg: 'No utilize este método para crear posts.',
+        })
+        break
       default:
         response.notFound({
           msg: 'No se encontró ningún metodo para manejar su petición.',

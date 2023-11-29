@@ -18,6 +18,7 @@ export default class extends BaseSchema {
       //table.timestamp('created_at', { useTz: true })
       ///table.foreign('user_id').references('users.id')
       table.integer('user_id').unsigned().references('id').inTable('users')
+      table.integer('topic_id').unsigned().references('id').inTable('topics')
       //table.timestamp('updated_at', { useTz: true })
       table.timestamps()
     })

@@ -23,7 +23,9 @@ import Route from '@ioc:Adonis/Core/Route'
 Route.group(() => {
   Route.any('/users/:id?', 'UsersController.decide').namespace('App/Controllers/Http')
   Route.any('/comments/:id?', 'CommentsController.decide').namespace('App/Controllers/Http')
+  Route.post('/comments/post/:id?', 'CommentsController.store').namespace('App/Controllers/Http')
   Route.any('/posts/:id?', 'PostsController.decide').namespace('App/Controllers/Http')
+  Route.post('/posts/user/:id?', 'PostsController.store').namespace('App/Controllers/Http')
 }).prefix('v1')
 
 Route.group(() => {

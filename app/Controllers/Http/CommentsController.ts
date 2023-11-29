@@ -1,6 +1,7 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Comment from 'App/Models/Comment'
+import Post from 'App/Models/Post'
 import CommentValidator from 'App/Validators/CommentValidator'
 
 export default class CommentsController {
@@ -42,23 +43,38 @@ export default class CommentsController {
   }
 
   public async store ({ request, response }) {
-    await request.validate(CommentValidator)
-    const comment = await Comment.create({
-      name: request.input('name'),
-      middle_name: request.input('middle_name', null),
-      last_name: request.input('last_name'),
-      status: request.input('status', null),
-      genre: request.input('genre', null),
-      email: request.input('email'),
-      active: true,
-    })
-    comment.save()
-    response.created(
-      {
-        msg: 'El comentario ha sido cread0.',
-        data: comment,
+    let id = request.param('id', null)
+    if (id !== null) {
+      let post = await Post.query().where('id', request.param('id'))
+      if (post !== null) {
+        await request.validate(CommentValidator)
+        const comment = await Comment.create({
+          content: request.input('content'),
+          likes: request.input('likes'),
+          dislikes: request.input('dislikes'),
+          active: true,
+        })
+        comment.save()
+        response.created(
+          {
+            msg: 'El comentario ha sido creado.',
+            data: comment,
+          }
+        )
+      } else {
+        response.created(
+          {
+            msg: 'No se encontró la publicación a comentar.',
+          }
+        )
       }
-    )
+    } else {
+      response.notFound(
+        {
+          msg: 'No se ha indicado ninguna publicación a la cual contestar.',
+        }
+      )
+    }
   }
 
   public async update ({ request, response }) {
@@ -132,7 +148,10 @@ export default class CommentsController {
       case 'GET':
         return this.index({request, response})
       case 'POST':
-        return this.store({request, response})
+        response.notAcceptable({
+          msg: 'No utilize este método para crear posts.',
+        })
+        break
       case 'PUT':
         return this.update({request, response})
       case 'DELETE':
