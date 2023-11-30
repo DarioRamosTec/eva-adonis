@@ -51,8 +51,8 @@ export default class CommentsController {
         await request.validate(CommentValidator)
         const comment = await Comment.create({
           content: request.input('content'),
-          likes: request.input('likes'),
-          dislikes: request.input('dislikes'),
+          likes: request.input('likes', null),
+          dislikes: request.input('dislikes', null),
           active: true,
         })
         comment.save()
@@ -163,19 +163,15 @@ export default class CommentsController {
       case 'GET':
         return this.index({request, response})
       case 'POST':
-        response.notAcceptable({
-          msg: 'No utilize este método para crear posts.',
-        })
-        break
+        return this.store({request, response})
       case 'PUT':
         return this.update({request, response})
       case 'DELETE':
         return this.destroy({request, response})
       default:
-        response.notFound({
+        return response.notFound({
           msg: 'No se encontró ningún metodo para manejar su petición.',
         })
-        break
     }
   }
 }

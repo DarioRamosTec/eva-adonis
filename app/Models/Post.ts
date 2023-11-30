@@ -17,6 +17,9 @@ export default class Post extends BaseModel {
   public content: string
 
   @column()
+  public rating: number
+
+  @column()
   public likes: number
 
   @column()

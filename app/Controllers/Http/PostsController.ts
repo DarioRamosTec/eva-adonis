@@ -109,19 +109,23 @@ export default class PostsController {
   }
 
   public async rate ({ request, response }) {
-    let rate = request.input('rate', null)
+    const rate : number = parseInt(request.input('rate', null))
     if (rate !== null) {
-      const post = await Post.query().where('id', request.param('id'))
-        .where('active', true)
+      const post = await Post.find(request.param('id'))
       if (post !== null) {
         if (rate < 0) {
-          response.notAcceptable({
+          console.log(typeof(rate))
+          response.status(406)
+          response.send({
             msg: 'No se pueden insertar calificaciones negativas.',
+            rating: rate,
           })
         } else {
-          post[0].save()
+          post.rating = rate
+          post.save()
           response.accepted({
             msg: 'Se ha cambiado la calificación',
+            rating: rate,
           })
         }
       } else {

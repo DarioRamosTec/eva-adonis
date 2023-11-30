@@ -28,8 +28,8 @@ Route.group(() => {
   Route.any('/posts/:id?', 'PostsController.decide').namespace('App/Controllers/Http')
   Route.post('/posts/user/:id?', 'PostsController.store').namespace('App/Controllers/Http')
   Route.post('/posts/:id/rating', 'PostsController.rate').namespace('App/Controllers/Http')
-  Route.post('/group', 'PostsController.store').namespace('App/Controllers/Http')
-}).prefix('v1')
+  Route.post('/group', 'GroupsController.store').namespace('App/Controllers/Http')
+})
 
 Route.group(() => {
   Route.any('/eva', async ({ request }) => {
