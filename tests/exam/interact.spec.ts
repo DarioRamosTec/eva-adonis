@@ -40,13 +40,13 @@ test.group('Create, post, comment and like.', () => {
     response.assertStatus(201)
     assert.isNotEmpty(response.body()['data'])
   }),
-  test('Add a negative like in a post.', async ({client, assert}) => {
-    const response = await client.post('/post/like')
+  test('Add a negative rating in a post.', async ({client, assert}) => {
+    const response = await client.post('/posts/1/rating')
 
     response.assertStatus(406)
-    assert.isBelow(response.body()['like'], 0)
+    assert.isBelow(response.body()['rating'], 0)
     response.assertBodyContains({
-      msg: 'No se pueden insertar likes negativos, para eso, añade un dislike.',
+      msg: 'No se pueden insertar calificaciones negativas.',
     })
   })
 })

@@ -2,6 +2,7 @@
 
 import Comment from 'App/Models/Comment'
 import Post from 'App/Models/Post'
+import User from 'App/Models/User'
 import CommentValidator from 'App/Validators/CommentValidator'
 
 export default class CommentsController {
@@ -79,15 +80,29 @@ export default class CommentsController {
 
   public async update ({ request, response }) {
     const validation = await request.validate(CommentValidator)
-
     if (request.param('id', null) !== null) {
       const comment = await Comment.query().where('id', request.param('id'))
         .where('active', true)
       if (comment !== null) {
         comment[0].merge(validation).save()
-        response.accepted({
-          msg: 'El comentario se ha actualizado.',
-        })
+        let email = request.input('email', null)
+        const userComment = await User.find(comment[0].id)
+        if (email !== null && userComment !== null) {
+          const user = await User.query().where('email', email)
+          if (user[0].id === userComment.id && user[0].password === userComment.password) {
+            response.accepted({
+              msg: 'El comentario se ha actualizado.',
+            })
+          } else {
+            response.unauthorized({
+              msg: 'No tienes el permiso para editar.',
+            })
+          }
+        } else {
+          response.notFound({
+            msg: 'Debes iniciar sesión para editar.',
+          })
+        }
       } else {
         response.notFound(
           {

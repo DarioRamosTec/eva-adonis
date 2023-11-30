@@ -1,6 +1,8 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Post from 'App/Models/Post'
+import PostsTopics from 'App/Models/PostsTopics'
+import Topic from 'App/Models/Topic'
 import User from 'App/Models/User'
 import PostValidator from 'App/Validators/PostValidator'
 
@@ -101,6 +103,89 @@ export default class PostsController {
       response.forbidden(
         {
           msg: 'Para actualizar una publicación, se debe señalar un identificador.',
+        }
+      )
+    }
+  }
+
+  public async rate ({ request, response }) {
+    let rate = request.input('rate', null)
+    if (rate !== null) {
+      const post = await Post.query().where('id', request.param('id'))
+        .where('active', true)
+      if (post !== null) {
+        if (rate < 0) {
+          response.notAcceptable({
+            msg: 'No se pueden insertar calificaciones negativas.',
+          })
+        } else {
+          post[0].save()
+          response.accepted({
+            msg: 'Se ha cambiado la calificación',
+          })
+        }
+      } else {
+        response.notFound(
+          {
+            msg: 'No existe ninguna publicación con la clave especificada.',
+          }
+        )
+      }
+    } else {
+      response.forbidden(
+        {
+          msg: 'Debes de incluir una calificación adecuada.',
+        }
+      )
+    }
+  }
+
+  public async topic ({ request, response }) {
+    let topic = request.input('topic', null)
+    if (topic !== null) {
+      const post = await Post.query().where('id', request.param('id'))
+      if (post !== null) {
+        const found = await Topic.query().where('title', topic)
+        if (found !== null) {
+          //
+          const newTopic = await Topic.create({
+            title: request.input('rate'),
+          })
+          newTopic.save()
+          //
+          const postsTopics = await PostsTopics.create({
+            post_id: request.input('rate'),
+            topic_id: newTopic.id,
+          })
+          postsTopics.save()
+          response.accepted(
+            {
+              msg: 'Se agregó el tópico al post.',
+            }
+          )
+        } else {
+          //
+          const newTopic = await Topic.create({
+            title: request.input('rate'),
+          })
+          newTopic.save()
+          response.created(
+            {
+              msg: 'Se creó un nuevo tópico y se agregó al post.',
+            }
+          )
+        }
+      } else {
+        response.notFound(
+          {
+            msg: 'La publicación no fue encontrada.',
+          }
+        )
+      }
+    } else {
+      response.notFound(
+        {
+          msg: 'No se añadio ningún tópico.',
         }
       )
     }

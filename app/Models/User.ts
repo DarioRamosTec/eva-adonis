@@ -31,6 +31,9 @@ export default class User extends BaseModel {
   @column()
   public active: boolean
 
+  @column()
+  public followers: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
