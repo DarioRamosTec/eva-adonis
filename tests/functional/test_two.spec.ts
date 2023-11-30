@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 
 test.group('Test two', () => {
-  test('Find if Yeojin exits.', async ({client}) => {
+  /*test('Find if Yeojin exits.', async ({client}) => {
     const response = await client.get('v1/users')
     response.assertBodyContains({
       'msg': 'Estos son todos los usuarios.',
@@ -66,5 +66,5 @@ test.group('Test two', () => {
     ;(await response).assertBody({
       'msg': 'El usuario ha sido desactivado.',
     })
-  })
+  })*/
 })

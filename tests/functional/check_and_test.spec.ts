@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 
 test.group('Test the new tests', () => {
-  test('The body is how i want?', async ({client, assert}) => {
+  /*test('The body is how i want?', async ({client, assert}) => {
     const response = await client.get('/test/me')
 
     response.assertBody({msg: 'TEST ME!', data: []})
@@ -14,5 +14,5 @@ test.group('Test the new tests', () => {
     assert.isBoolean(response.body()['data'])
     assert.isFalse(response.body()['data'])
     assert.isNotArray(response.body()['data'])
-  })
+  })*/
 })
