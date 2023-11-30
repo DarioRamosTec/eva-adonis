@@ -1,12 +1,13 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'topics'
+  protected tableName = 'users_users'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.string('title', 50)
+      table.integer('leader_id').unsigned().references('id').inTable('users')
+      table.integer('follower_id').unsigned().references('id').inTable('users')
       table.timestamps()
     })
   }

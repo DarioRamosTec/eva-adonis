@@ -1,7 +1,7 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Post from 'App/Models/Post'
-import PostsTopics from 'App/Models/PostsTopics'
+import PostsTopics from 'App/Models/PostsTopic'
 import Topic from 'App/Models/Topic'
 import User from 'App/Models/User'
 import PostValidator from 'App/Validators/PostValidator'
@@ -26,7 +26,7 @@ export default class PostsController {
         )
       }
     } else {
-      post = await Post.query().where('active', true).preload('user').preload('comments')
+      post = await Post.query().where('active', true).preload('comments')
       if (post.length > 0) {
         response.accepted(
           {
@@ -114,7 +114,6 @@ export default class PostsController {
       const post = await Post.find(request.param('id'))
       if (post !== null) {
         if (rate < 0) {
-          console.log(typeof(rate))
           response.status(406)
           response.send({
             msg: 'No se pueden insertar calificaciones negativas.',
@@ -146,36 +145,38 @@ export default class PostsController {
 
   public async topic ({ request, response }) {
     let topic = request.input('topic', null)
+    let found
     if (topic !== null) {
       const post = await Post.query().where('id', request.param('id'))
       if (post !== null) {
-        const found = await Topic.query().where('title', topic)
-        if (found !== null) {
+        found = await Topic.query().where('title', topic)
+        if (found.length === 0) {
           //
           const newTopic = await Topic.create({
-            title: request.input('rate'),
+            title: request.input('topic'),
           })
           newTopic.save()
           //
           const postsTopics = await PostsTopics.create({
-            post_id: request.input('rate'),
+            post_id: parseInt(request.param('id')),
             topic_id: newTopic.id,
+          })
+          postsTopics.save()
+          response.created(
+            {
+              msg: 'Se creó un nuevo tópico y se agregó al post.',
+            }
+          )
+        } else {
+          //
+          const postsTopics = await PostsTopics.create({
+            post_id: request.param('id'),
+            topic_id: found[0].id,
           })
           postsTopics.save()
           response.accepted(
             {
               msg: 'Se agregó el tópico al post.',
-            }
-          )
-        } else {
-          //
-          const newTopic = await Topic.create({
-            title: request.input('rate'),
-          })
-          newTopic.save()
-          response.created(
-            {
-              msg: 'Se creó un nuevo tópico y se agregó al post.',
             }
           )
         }

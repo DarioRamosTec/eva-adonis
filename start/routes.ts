@@ -21,14 +21,15 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
-  Route.put('/users/:id/followers', 'UsersController.followers').namespace('App/Controllers/Http')
+  //Route.put('/users/:id/followers', 'UsersController.follow').namespace('App/Controllers/Http')
   Route.any('/users/:id?', 'UsersController.decide').namespace('App/Controllers/Http')
   Route.any('/comments/:id?', 'CommentsController.decide').namespace('App/Controllers/Http')
   Route.post('/comments/post/:id', 'CommentsController.store').namespace('App/Controllers/Http')
   Route.any('/posts/:id?', 'PostsController.decide').namespace('App/Controllers/Http')
   Route.post('/posts/user/:id?', 'PostsController.store').namespace('App/Controllers/Http')
   Route.post('/posts/:id/rating', 'PostsController.rate').namespace('App/Controllers/Http')
-  Route.post('/group', 'GroupsController.store').namespace('App/Controllers/Http')
+  Route.put('/posts/:id/topic', 'PostsController.topic').namespace('App/Controllers/Http')
+  Route.post('/groups', 'GroupsController.store').namespace('App/Controllers/Http')
 })
 
 Route.group(() => {

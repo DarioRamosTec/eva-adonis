@@ -14,6 +14,7 @@ export default class GroupsController {
     response.created({
       msg: 'El grupo fue creado.',
       data: group,
+      empty: true,
     })
   }
 }

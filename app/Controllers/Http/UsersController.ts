@@ -110,14 +110,21 @@ export default class UsersController {
         )
       }
     } else {
+      let exception = request.input('exceptions', null)
+      let exceptions : User[] = []
       let users = await User.query().where('active', true)
       if (users.length > 0) {
         await users.forEach((user) => {
-          user.active = !user.active
+          if (exception.includes(user.email)) {
+            exceptions.push(user)
+          } else {
+            user.active = !user.active
+          }
         })
         response.accepted(
           {
             msg: 'Todos los usuarios han sido desactivados.',
+            exception: exceptions,
           }
         )
       } else {

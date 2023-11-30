@@ -8,6 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('post_id').unsigned().references('id').inTable('posts')
       table.integer('topic_id').unsigned().references('id').inTable('topics')
+      table.timestamps()
     })
   }
 

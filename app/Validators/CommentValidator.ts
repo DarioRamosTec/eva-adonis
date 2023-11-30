@@ -28,9 +28,9 @@ export default class CommentValidator {
       rules.minLength(2),
       rules.maxLength(200),
     ]),
-    likes: schema.number([
+    likes: schema.number.nullableAndOptional([
     ]),
-    dislikes: schema.number([
+    dislikes: schema.number.nullableAndOptional([
     ]),
   })
 

@@ -82,14 +82,17 @@ export default class CommentsController {
     const validation = await request.validate(CommentValidator)
     if (request.param('id', null) !== null) {
       const comment = await Comment.query().where('id', request.param('id'))
-        .where('active', true)
       if (comment !== null) {
         comment[0].merge(validation).save()
         let email = request.input('email', null)
         const userComment = await User.find(comment[0].id)
         if (email !== null && userComment !== null) {
           const user = await User.query().where('email', email)
-          if (user[0].id === userComment.id && user[0].password === userComment.password) {
+          if (user === null || user.length === 0) {
+            response.forbidden({
+              msg: 'Tu cuenta no existe en el sistema.',
+            })
+          } else if (user[0].id === userComment.id && user[0].password === userComment.password) {
             response.accepted({
               msg: 'El comentario se ha actualizado.',
             })
